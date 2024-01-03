@@ -1,7 +1,7 @@
 use bstr::{BStr, ByteSlice};
 use memmap::MmapOptions;
 use rustc_hash::FxHashMap as HashMap;
-use std::{fmt::Display, fs::File, time::Instant};
+use std::{fmt::Display, fs::File};
 
 use rayon::prelude::*;
 
@@ -68,18 +68,15 @@ fn merge<'a>(a: &mut HashMap<&'a BStr, State>, b: &HashMap<&'a BStr, State>) {
 }
 
 fn main() {
-    let start_t = Instant::now();
     let cores: usize = std::thread::available_parallelism().unwrap().into();
     let path = match std::env::args().skip(1).next() {
         Some(path) => path,
         None => "measurements.txt".to_owned(),
     };
-    eprintln!("Will read '{path}'");
     let file = File::open(path).unwrap();
     let mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
 
     let chunk_size = mmap.len() / cores;
-    eprintln!("file size: {}, chunk size: {chunk_size}", mmap.len());
     let mut chunks: Vec<(usize, usize)> = vec![];
     let mut start = 0;
     for _ in 0..cores {
@@ -93,20 +90,12 @@ fn main() {
         };
         let end = end + next_new_line;
         chunks.push((start, end));
-        eprintln!("({start}, {end})");
         start = end + 1;
     }
-    eprintln!("chunks: {chunks:?}\n {:?}", start_t.elapsed());
-    let start = Instant::now();
     let parts: Vec<_> = chunks
         .par_iter()
-        .map(|r| {
-            let ret = solve_for_part(*r, &mmap);
-            eprintln!("{r:?} done");
-            ret
-        })
+        .map(|r| solve_for_part(*r, &mmap))
         .collect();
-    eprintln!("chunks done: {:?}", start.elapsed());
 
     let state: HashMap<&BStr, State> = parts.into_iter().fold(Default::default(), |mut a, b| {
         merge(&mut a, &b);
