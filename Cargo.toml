@@ -1,5 +1,5 @@
 [package]
-name = "rs"
+name = "one-billion-row-challenge"
 version = "0.1.0"
 edition = "2021"
 
