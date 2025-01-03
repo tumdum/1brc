@@ -97,10 +97,11 @@ fn main() {
         .map(|r| solve_for_part(*r, &mmap))
         .collect();
 
-    let state: HashMap<&BStr, State> = parts.into_iter().fold(Default::default(), |mut a, b| {
-        merge(&mut a, &b);
-        a
-    });
+    let state: HashMap<&BStr, State> =
+        parts.into_iter().fold(Default::default(), |mut a, b| {
+            merge(&mut a, &b);
+            a
+        });
 
     let mut all: Vec<_> = state.into_iter().collect();
     all.sort_unstable_by(|a, b| a.0.cmp(&b.0));
