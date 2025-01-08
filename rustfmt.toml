@@ -1,0 +1,20 @@
+# The following options sound like good idea, but are disabled by default. If
+# they happen to interfere with something, they probably need to be disabled
+# again.
+use_field_init_shorthand = true
+
+# The following options sound very promising. Unfortunately, they are only
+# available on nightly, which we will not experiment with for now. Once they
+# stabilised, it would be nice to activate them.
+#
+# format_code_in_doc_comments = true
+# group_imports = "StdExternalCrate"
+# imports_granularity = "Crate"
+# imports_layout = "Vertical"
+# reorder_impl_items = true
+
+# On small screens, i.e. the 14" screens of Lenovo's ThinkPad T470p, 87 is the
+# maximum width to have two Vim buffers side by side. Now, Python's formatter
+# `black` uses 88 and that works well too. Going higher would impede usability
+# on small screens too much.
+max_width = 88
